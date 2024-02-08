@@ -27,4 +27,8 @@ public class Transaction {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public double getAmount() {
+        return amount;
+    }
 }
