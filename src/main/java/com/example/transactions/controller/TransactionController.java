@@ -5,6 +5,7 @@ import com.example.transactions.exceptions.InvalidTransactionException;
 import com.example.transactions.exceptions.TransactionNotFoundException;
 import com.example.transactions.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,10 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> getAllTransactions() {
-
-        return transactionService.getAllTransactions();
+    public Page<Transaction> getAllTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return transactionService.getAllTransactions(page, size);
     }
 
     @GetMapping("/{id}")
