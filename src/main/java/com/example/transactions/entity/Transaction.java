@@ -1,6 +1,7 @@
-package com.example.transactions;
+package com.example.transactions.entity;
 
 
+import com.example.transactions.User;
 import jakarta.persistence.*;
 
 import java.util.Date;
