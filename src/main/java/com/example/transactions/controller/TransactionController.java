@@ -1,11 +1,13 @@
 package com.example.transactions.controller;
 
 import com.example.transactions.entity.Transaction;
+import com.example.transactions.exceptions.InvalidTransactionException;
+import com.example.transactions.exceptions.TransactionNotFoundException;
 import com.example.transactions.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +24,44 @@ public class TransactionController {
 
     @GetMapping
     public List<Transaction> getAllTransactions() {
+
         return transactionService.getAllTransactions();
+    }
+
+    @GetMapping("/{id}")
+    public Transaction getTransactionById(@PathVariable Long id) {
+        return transactionService.getTransactionById(id);
+    }
+
+    @PostMapping
+    public Transaction createTransaction(@RequestBody Transaction transaction) {
+        try {
+            Transaction createdTransaction = transactionService.createTransaction(transaction);
+            return new ResponseEntity<Transaction>(createdTransaction, HttpStatus.CREATED).getBody();
+        } catch (InvalidTransactionException e) {
+            return new ResponseEntity<Transaction>(HttpStatus.BAD_REQUEST).getBody();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction updatedTransaction) {
+        try {
+            Transaction updated = transactionService.updateTransaction(id, updatedTransaction);
+            return new ResponseEntity<Transaction>(updated, HttpStatus.OK).getBody();
+        } catch (TransactionNotFoundException e) {
+            return new ResponseEntity<Transaction>(HttpStatus.NOT_FOUND).getBody();
+        } catch (InvalidTransactionException e) {
+            return new ResponseEntity<Transaction>(HttpStatus.BAD_REQUEST).getBody();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Transaction> deleteTransaction(@PathVariable Long id) {
+        try {
+            transactionService.deleteTransaction(id);
+            return new ResponseEntity<Transaction>(HttpStatus.NO_CONTENT);
+        } catch (TransactionNotFoundException e) {
+            return new ResponseEntity<Transaction>(HttpStatus.NOT_FOUND);
+        }
     }
 }
