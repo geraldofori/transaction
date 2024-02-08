@@ -5,6 +5,8 @@ import com.example.transactions.exceptions.InvalidTransactionException;
 import com.example.transactions.exceptions.TransactionNotFoundException;
 import com.example.transactions.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +18,9 @@ public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
-    public List<Transaction> getAllTransactions() {
-
-        return transactionRepository.findAll();
+    public Page<Transaction> getAllTransactions(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return transactionRepository.findAll(pageRequest);
     }
 
     public Transaction getTransactionById(Long id) {
